@@ -1,0 +1,33 @@
+version: "3.0"
+
+services:
+
+  python:
+    container_name: python
+    
+    build:
+      context: ../fastapi
+      dockerfile: "Dockerfile"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../fastapi:/fastapi
+    tty: true
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: mysql
+    build: ../mysql
+    environment:
+      - MYSQL_DATABASE=db1
+      - MYSQL_ROOT_USER=root
+      - MYSQL_ROOT_PASSWORD=mysql
+      - TZ=Japan
+    volumes:
+      - ../mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ../mysql/dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+    tty: true
